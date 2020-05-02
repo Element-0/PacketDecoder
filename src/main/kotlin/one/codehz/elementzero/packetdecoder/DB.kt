@@ -47,7 +47,7 @@ class DB(path: String) {
   ): Sequence<Frame> {
     return sequence {
       while (rs.next()) {
-        val type = if (rs.getBoolean("type")) FrameType.Received else FrameType.Sent
+        val type = if (rs.getBoolean("type")) FrameType.Sent else FrameType.Received
         val session = asUUID(rs.getBytes("session"))
         val address = rs.getString("address")
         val xuid = rs.getLong("xuid")
