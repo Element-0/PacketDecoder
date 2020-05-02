@@ -1,7 +1,5 @@
 package one.codehz.elementzero.packetdecoder
 
-import com.google.gson.Gson
-import com.google.gson.GsonBuilder
 import com.nukkitx.protocol.bedrock.BedrockPacket
 import java.lang.Exception
 import java.util.*
