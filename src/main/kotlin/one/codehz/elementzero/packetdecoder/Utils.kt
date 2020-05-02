@@ -10,15 +10,15 @@ import java.util.*
 
 fun asUUID(bin: ByteArray): UUID {
   val data = ByteBuffer.wrap(bin)
-  val high = data.long
-  val low = data.long
+  val high = java.lang.Long.reverseBytes(data.long)
+  val low = java.lang.Long.reverseBytes(data.long)
   return UUID(high, low)
 }
 
 fun fromUUID(uuid: UUID): ByteArray {
   val bb = ByteBuffer.wrap(ByteArray(16))
-  bb.putLong(uuid.mostSignificantBits)
-  bb.putLong(uuid.leastSignificantBits)
+  bb.putLong(java.lang.Long.reverseBytes(uuid.mostSignificantBits))
+  bb.putLong(java.lang.Long.reverseBytes(uuid.leastSignificantBits))
   return bb.array()
 }
 
