@@ -54,7 +54,7 @@ class DB(path: String) {
         val date = rs.getString("time")
         val bin = rs.getBinaryStream("data")
         try {
-          val data = Bedrock_v390.V390_CODEC.tryDecode(Unpooled.wrappedBuffer(bin.readAllBytes())).toString()
+          val data = Bedrock_v390.V390_CODEC.tryDecode(Unpooled.wrappedBuffer(bin.readAllBytes()))
           yield(ValidFrame(type, session, date, xuid, address, data))
         } catch (e: Exception) {
           yield(InvalidFrame(type, session, date, xuid, address, e))
