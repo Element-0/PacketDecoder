@@ -22,7 +22,6 @@ fun fromUUID(uuid: UUID): ByteArray {
   return bb.array()
 }
 
-
 class UUIDFn : Function() {
   override fun xFunc() {
     if (args() != 1) {

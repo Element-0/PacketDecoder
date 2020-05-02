@@ -31,18 +31,16 @@ class Decode : CliktCommand("Decode database", name = "decode") {
   override fun run() {
     val db = DB(database)
     val stream = query?.let { db.decodeByQuery(it) } ?: db.decode()
-    stream.map {
-      it.dump(
-        FrameDumpOption(
-          FrameDumpDisplayOption(
-            hasSession = showSession,
-            hasXUID = showXUID,
-            hasAddress = showAddress
-          )
+    val dumper = FrameDumper(
+      FrameDumpOption(
+        FrameDumpDisplayOption(
+          hasSession = showSession,
+          hasXUID = showXUID,
+          hasAddress = showAddress
         )
       )
-    }
-      .forEach(::println)
+    )
+    stream.map { dumper.dump(it) }.forEach(::println)
   }
 }
 
