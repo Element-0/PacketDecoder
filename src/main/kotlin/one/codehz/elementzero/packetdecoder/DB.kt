@@ -33,7 +33,7 @@ class DB(path: String) {
   fun decode(): Sequence<Frame> {
     val statement = connection.createStatement()
     val rs =
-      statement.executeQuery("select type, idmap.session, address, xuid, time, data from packets join idmap")
+      statement.executeQuery("select type, idmap.session, address, xuid, time, data from packets join idmap using (session)")
     return decodeResultSet(rs, statement)
   }
 
@@ -41,7 +41,7 @@ class DB(path: String) {
     val statement = connection.createStatement()
     val rs =
       statement.executeQuery(
-        "select * from (select type, idmap.session as session, address, xuid, time, data from packets join idmap) where $query"
+        "select * from (select type, idmap.session as session, address, xuid, time, data from packets join idmap using (session)) where $query"
       )
     return decodeResultSet(rs, statement)
   }
