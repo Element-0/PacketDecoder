@@ -2,6 +2,7 @@ package one.codehz.elementzero.packetdecoder
 
 import com.nukkitx.protocol.bedrock.v390.Bedrock_v390
 import io.netty.buffer.Unpooled
+import org.sqlite.Function
 import java.io.InputStream
 import java.lang.Exception
 import java.nio.ByteBuffer
@@ -12,6 +13,10 @@ import java.util.*
 
 class DB(path: String) {
   private val connection = DriverManager.getConnection("jdbc:sqlite:$path")
+
+  init {
+    Function.create(connection, "uuid", UUIDFn())
+  }
 
   fun getSessions(): Sequence<UUID> {
     val statement = connection.createStatement()
@@ -32,12 +37,12 @@ class DB(path: String) {
     return decodeResultSet(rs, statement)
   }
 
-  fun decodeBySession(session: UUID): Sequence<Frame> {
-    val statement = connection.prepareStatement(
-      "select type, idmap.session, address, xuid, time, data from packets join idmap where packets.session = ?"
-    )
-    statement.setBytes(1, fromUUID(session))
-    val rs = statement.executeQuery()
+  fun decodeByQuery(query: String): Sequence<Frame> {
+    val statement = connection.createStatement()
+    val rs =
+      statement.executeQuery(
+        "select * from (select type, idmap.session as session, address, xuid, time, data from packets join idmap) where $query"
+      )
     return decodeResultSet(rs, statement)
   }
 

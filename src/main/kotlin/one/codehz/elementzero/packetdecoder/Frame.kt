@@ -4,7 +4,13 @@ import com.nukkitx.protocol.bedrock.BedrockPacket
 import java.lang.Exception
 import java.util.*
 
-sealed class Frame
+data class FrameDumpDisplayOption(val hasSession: Boolean = false, val hasXUID: Boolean = true, val hasAddress: Boolean = false)
+
+data class FrameDumpOption(val display: FrameDumpDisplayOption)
+
+sealed class Frame {
+  abstract fun dump(opt: FrameDumpOption): String
+}
 
 data class ValidFrame(
   val type: FrameType,
@@ -14,19 +20,25 @@ data class ValidFrame(
   val address: String,
   val data: BedrockPacket
 ) : Frame() {
-  override fun toString(): String {
+  override fun dump(opt: FrameDumpOption): String {
     val builder = StringBuilder()
     builder.append("V")
     builder.append(if (type == FrameType.Received) "R" else "S")
     builder.append(" ")
-    builder.append(session.toString())
-    builder.append(" ")
+    if (opt.display.hasSession) {
+      builder.append(session.toString())
+      builder.append(" ")
+    }
     builder.append(time)
     builder.append(" ")
-    builder.append(xuid)
-    builder.append(" ")
-    builder.append(address)
-    builder.append(" ")
+    if (opt.display.hasXUID) {
+      builder.append(xuid)
+      builder.append(" ")
+    }
+    if (opt.display.hasAddress) {
+      builder.append(address)
+      builder.append(" ")
+    }
     builder.append(data)
     return builder.toString()
   }
@@ -40,19 +52,25 @@ data class InvalidFrame(
   val address: String,
   val exception: Exception
 ) : Frame() {
-  override fun toString(): String {
+  override fun dump(opt: FrameDumpOption): String {
     val builder = StringBuilder()
     builder.append("E")
     builder.append(if (type == FrameType.Received) "R" else "S")
     builder.append(" ")
-    builder.append(session.toString())
-    builder.append(" ")
+    if (opt.display.hasSession) {
+      builder.append(session.toString())
+      builder.append(" ")
+    }
     builder.append(time)
     builder.append(" ")
-    builder.append(xuid)
-    builder.append(" ")
-    builder.append(address)
-    builder.append(" ")
+    if (opt.display.hasXUID) {
+      builder.append(xuid)
+      builder.append(" ")
+    }
+    if (opt.display.hasAddress) {
+      builder.append(address)
+      builder.append(" ")
+    }
     builder.append(exception)
     return builder.toString()
   }
