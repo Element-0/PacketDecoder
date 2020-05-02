@@ -15,7 +15,7 @@ class DB(path: String) {
 
   fun getSessions(): Sequence<UUID> {
     val statement = connection.createStatement()
-    val rs = statement.executeQuery("select distinct session from record")
+    val rs = statement.executeQuery("select distinct session from packets")
     return sequence {
       while (rs.next()) {
         val bin = rs.getBytes(1)
