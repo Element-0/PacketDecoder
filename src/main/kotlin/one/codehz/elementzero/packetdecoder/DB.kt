@@ -1,11 +1,9 @@
 package one.codehz.elementzero.packetdecoder
 
-import com.nukkitx.protocol.bedrock.v390.Bedrock_v390
+import com.nukkitx.network.VarInts
+import com.nukkitx.protocol.bedrock.v408.Bedrock_v408
 import io.netty.buffer.Unpooled
 import org.sqlite.Function
-import java.io.InputStream
-import java.lang.Exception
-import java.nio.ByteBuffer
 import java.sql.DriverManager
 import java.sql.ResultSet
 import java.sql.Statement
@@ -59,7 +57,10 @@ class DB(path: String) {
         val date = rs.getString("time")
         val bin = rs.getBinaryStream("data")
         try {
-          val data = Bedrock_v390.V390_CODEC.tryDecode(Unpooled.wrappedBuffer(bin.readAllBytes()))
+          val packetBuffer = Unpooled.wrappedBuffer(bin.readAllBytes())
+          val header = VarInts.readUnsignedInt(packetBuffer)
+          val packetId = header and 0x3ff
+          val data = Bedrock_v408.V408_CODEC.tryDecode(packetBuffer, packetId)
           yield(ValidFrame(type, session, date, xuid, address, data))
         } catch (e: Exception) {
           yield(InvalidFrame(type, session, date, xuid, address, e))
