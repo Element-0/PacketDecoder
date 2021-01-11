@@ -16,7 +16,7 @@ repositories {
 
 dependencies {
   implementation(kotlin("stdlib-jdk8"))
-  implementation("com.nukkitx.protocol:bedrock-v390:2.5.6")
+  implementation("com.nukkitx.protocol:bedrock-v408:2.6.0-SNAPSHOT")
   implementation("com.github.ajalt:clikt:2.6.0")
   implementation("org.xerial:sqlite-jdbc:3.30.1")
 }
